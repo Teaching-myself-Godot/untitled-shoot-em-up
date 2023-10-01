@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=3 uid="uid://0ypma26cv86u"]
+
+[ext_resource type="Script" path="res://node_3d.gd" id="1_8xj73"]
+[ext_resource type="PackedScene" uid="uid://0kdswduv7ocf" path="res://player-ship.blend" id="1_otfxf"]
+[ext_resource type="Script" path="res://player-ship.gd" id="2_raysi"]
+[ext_resource type="Shader" path="res://shaders/fire.gdshader" id="3_jkihf"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ae0yo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_if44i"]
+render_priority = 0
+shader = ExtResource("3_jkihf")
+shader_parameter/root_color = Vector4(1, 0, 0, 1)
+shader_parameter/tip_color = Vector4(1, 1, 0, 1)
+shader_parameter/fire_alpha = 0.982
+shader_parameter/fire_speed = Vector2(0, 5)
+shader_parameter/fire_aperture = 0.2
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_ae0yo")
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_8xj73")
+
+[node name="player-ship" parent="." instance=ExtResource("1_otfxf")]
+rotation_edit_mode = 2
+script = ExtResource("2_raysi")
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="player-ship"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -1, 5, 0)
+light_color = Color(0.917647, 0.984314, 0.92549, 1)
+light_energy = 8.0
+omni_range = 12.0802
+
+[node name="OmniLight3D" type="OmniLight3D" parent="player-ship"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1, 5, 0)
+light_color = Color(0.917647, 0.984314, 0.92549, 1)
+light_energy = 8.0
+omni_range = 12.0802
+
+[node name="Thruster" type="CSGSphere3D" parent="player-ship"]
+transform = Transform3D(1.00292, -0.00272699, -0.00129382, -0.00175424, 0.0435096, -0.683385, 0.00305621, 0.91986, 0.0323204, 0.012, -0.0860005, 1.5)
+radius = 0.284344
+radial_segments = 18
+rings = 16
+material = SubResource("ShaderMaterial_if44i")
+
+[node name="BulletTimer" type="Timer" parent="player-ship"]
+wait_time = 0.2
+autostart = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 150, -20)
+fov = 20.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.995341, -0.0963813, 0.00259042, -0.00361702, -0.0104783, 0.999939, -0.0963482, -0.995289, -0.0107781, 0.140645, 58.4825, -43.6771)
+light_energy = 0.5
+
+[connection signal="shoot_bullet" from="player-ship" to="." method="_on_playership_shoot_bullet"]
+[connection signal="timeout" from="player-ship/BulletTimer" to="player-ship" method="_on_bullet_timer_timeout"]

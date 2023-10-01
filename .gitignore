@@ -1,0 +1,4 @@
+# Godot 4+ specific ignores
+.godot/
+icon.*
+export_presets.cfg
